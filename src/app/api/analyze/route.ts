@@ -15,29 +15,66 @@ function buildSystemPrompt(platform: string, refusHistory: string[]): string {
 
   const platformGuidelines =
     platform === 'google'
-      ? `SPÉCIFICITÉS GOOGLE ADS & YOUTUBE ADS (très strict) :
-- Zéro tolérance pour les allégations de santé/perte de poids sans preuve clinique
-- Interdit : "garanti", "résultats assurés", toute promesse de résultat chiffré
-- Interdit : urgence artificielle ("plus que X places", "offre expire dans")
-- Interdit : avant/après pour la perte de poids, chirurgie esthétique, fitness
-- Interdit : superlatifs absolus non vérifiables ("le meilleur", "n°1", "révolutionnaire")
-- Interdit : comparaisons avec des concurrents nommés sans preuve
-- YouTube : règles encore plus strictes sur le contenu "clickbait" et les promesses financières
-- Scoring : appliquer un malus de +15 points par rapport à Meta sur les mêmes éléments`
+      ? `SPÉCIFICITÉS GOOGLE ADS & YOUTUBE ADS :
+
+CE QUI EST STRICTEMENT INTERDIT (refus automatique) :
+- Allégations de santé sans preuve clinique ou approbation réglementaire (FDA/ANSM)
+- Mots interdits en contexte santé : "guérit", "traite", "soigne", "élimine", "répare"
+- Promesses de résultats garantis : "garanti", "100%", "résultats assurés", "vous perdrez X kg"
+- Délais irréalistes : "en 24h", "en 2 semaines", "résultats immédiats"
+- Fausse urgence avec compteurs : "offre expire dans X heures", "il reste X places" (surtout si fictif)
+- Avant/après pour perte de poids, chirurgie esthétique, fitness
+- Superlatifs non vérifiables : "le meilleur au monde", "n°1", "révolutionnaire", "unique au monde"
+- Clickbait YouTube : titres/scripts conçus pour tromper sur le contenu ("Ce que les médecins cachent")
+- Promesses financières irréalistes : "devenez riche", "gagnez X€ sans rien faire"
+- Suspension de compte IMMÉDIATE sans avertissement pour violations graves
+
+CE QUI EST TOLÉRÉ :
+- Urgence réelle et vérifiable ("promotion jusqu'au 31 décembre")
+- Témoignages avec disclaimer légal ("résultats non représentatifs")
+- "Peut aider à", "conçu pour soutenir", "dans le cadre d'une alimentation équilibrée"
+- Superlatifs avec contexte prouvable ("notre offre la plus populaire")
+- Claims santé si documentation réglementaire disponible`
+
       : platform === 'meta'
-        ? `SPÉCIFICITÉS META ADS (modérément strict) :
-- Interdit : allégations de santé directes ("guérit", "traite", "soigne")
-- Interdit : images avant/après pour la perte de poids
-- Toléré avec nuances : urgence légère, témoignages avec disclaimer, résultats "typiques"
-- Toléré : superlatifs si contexte clair (ex: "notre meilleure offre")
-- Plus permissif que Google sur les promesses de résultats si formulées avec précaution
-- Scoring : appliquer le barème standard`
-        : `COMPARAISON DES PLATEFORMES :
-Google Ads & YouTube Ads sont SIGNIFICATIVEMENT plus stricts que Meta.
-- Un script acceptable sur Meta peut être refusé sur Google/YouTube
-- Applique un malus de +15 points pour Google/YouTube vs Meta sur les mêmes éléments
-- Identifie clairement dans chaque problème quelle plateforme est concernée
-- Le score_risque doit refléter le risque sur la plateforme la plus stricte (Google/YouTube)`
+        ? `SPÉCIFICITÉS META ADS (Facebook/Instagram) :
+
+CE QUI EST STRICTEMENT INTERDIT (refus quasi-certain) :
+- Allégations médicales directes : "guérit", "traite", "soigne", "diagnostique"
+- Avant/après corps : transformation physique, perte de poids avant/après
+- Messagerie négative sur le corps : suggérer que l'utilisateur est "incomplet", "laid", "en mauvaise santé"
+- Promesses de résultats avec délai précis : "perdez 10kg en 2 semaines"
+- Garanties absolues : "garanti ou remboursé" sur des résultats de santé
+- Maladies graves : prétendre soigner cancer, diabète, Alzheimer, dépression
+
+CE QUI EST TOLÉRÉ (Meta est plus permissif que Google sur ces points) :
+- Urgence légère et réelle : "offre limitée", "places disponibles" (si vrai)
+- Témoignages et avis clients avec disclaimer
+- Superlatifs marketing classiques : "la meilleure méthode", "notre top produit"
+- Résultats typiques avec nuance : "la plupart de nos clients constatent..."
+- Promesses de résultats si formulées avec précaution ("peut vous aider à", "conçu pour")
+- Scripts de coaching, business, formation : très permissif si pas d'allégation de santé
+- FOMO léger : "rejoignez des milliers de clients satisfaits"
+- Comparaisons générales sans nommer de concurrent
+
+NOTE IMPORTANTE : Pour les scripts non liés à la santé/finances (coaching, e-commerce, services, SaaS), Meta est très permissif. Scorer avec indulgence sauf éléments clairement trompeurs.`
+
+        : `ANALYSE COMPARATIVE GOOGLE ADS vs META ADS :
+
+RÈGLE FONDAMENTALE : Google/YouTube est nettement plus strict que Meta.
+Un script refusé sur Meta sera presque toujours refusé sur Google.
+Un script accepté sur Google sera presque toujours accepté sur Meta.
+
+DIFFÉRENCES CLÉS :
+- Urgence : Meta tolère l'urgence légère. Google interdit les compteurs fictifs.
+- Santé : Les deux sont stricts, mais Google exige des preuves réglementaires. Meta applique des restrictions visuelles/tonales.
+- Superlatifs : Meta tolère "le meilleur". Google exige des preuves.
+- Témoignages : Meta tolère avec disclaimer. Google est plus strict sur les preuves.
+- Suspension : Google suspend immédiatement. Meta applique un processus graduel.
+- Coaching/Services/Formation (hors santé) : Meta très permissif. Google modérément strict.
+
+SCORING : Donne deux perspectives dans le conseil_global — ce qui passe sur Meta vs ce qui bloque sur Google.
+Le score_risque reflète le risque sur la plateforme la plus stricte (Google).`
 
   const historyContext =
     refusHistory.length > 0
