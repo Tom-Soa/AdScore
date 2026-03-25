@@ -1,101 +1,115 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import { useState } from 'react'
+import { AnalyzeForm } from '@/components/AnalyzeForm'
+import { AnalysisResultPanel } from '@/components/AnalysisResult'
+import { AnalysisResult, Platform } from '@/types/analysis'
+import { cn } from '@/lib/utils'
+
+export default function HomePage() {
+  const [result, setResult] = useState<AnalysisResult | null>(null)
+  const [analysisId, setAnalysisId] = useState<string | undefined>()
+  const [currentScript, setCurrentScript] = useState('')
+  const [currentPlatform, setCurrentPlatform] = useState<Platform>('both')
+  const [feedbackStatus, setFeedbackStatus] = useState<'pending' | 'approved' | 'rejected'>('pending')
+
+  const handleResult = (res: AnalysisResult, id?: string, script?: string, platform?: Platform) => {
+    setResult(res)
+    setAnalysisId(id)
+    setCurrentScript(script || '')
+    setCurrentPlatform(platform || 'both')
+    setFeedbackStatus('pending')
+    setTimeout(() => {
+      document.getElementById('result-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 100)
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="max-w-5xl mx-auto px-4 py-10">
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Header */}
+      <div className="text-center mb-12">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-violet-500/20 bg-violet-500/8 mb-5">
+          <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
+          <span className="text-[10px] font-mono text-violet-400/80 uppercase tracking-[0.15em]">
+            Compliance AI
+          </span>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        <h1 className="text-4xl sm:text-5xl font-mono font-bold text-white leading-tight mb-3">
+          Script
+          <span
+            className="inline-block ml-3"
+            style={{
+              background: 'linear-gradient(135deg, #a78bfa 0%, #818cf8 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
+            Analyzer
+          </span>
+        </h1>
+        <p className="text-white/35 text-sm max-w-sm mx-auto leading-relaxed">
+          Détectez les risques de refus avant de diffuser vos publicités sur Google &amp; Meta
+        </p>
+      </div>
+
+      {/* Grid */}
+      <div className={cn('grid gap-6', result ? 'lg:grid-cols-2 items-start' : 'max-w-xl mx-auto')}>
+
+        {/* Form card */}
+        <div
+          className="rounded-2xl p-6"
+          style={{
+            background: 'rgba(255,255,255,0.025)',
+            border: '1px solid rgba(255,255,255,0.07)',
+            backdropFilter: 'blur(12px)',
+          }}
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <div className="flex items-center gap-2 mb-6">
+            <div className="flex gap-1">
+              <div className="w-2 h-2 rounded-full bg-red-500/60" />
+              <div className="w-2 h-2 rounded-full bg-amber-500/60" />
+              <div className="w-2 h-2 rounded-full bg-green-500/60" />
+            </div>
+            <span className="text-[10px] font-mono text-white/20 uppercase tracking-[0.15em] ml-1">
+              Nouveau script
+            </span>
+          </div>
+          <AnalyzeForm onResult={handleResult} />
+        </div>
+
+        {/* Result card */}
+        {result && (
+          <div
+            id="result-panel"
+            className="rounded-2xl p-6"
+            style={{
+              background: 'rgba(255,255,255,0.025)',
+              border: '1px solid rgba(255,255,255,0.07)',
+              backdropFilter: 'blur(12px)',
+            }}
+          >
+            <div className="flex items-center gap-2 mb-6">
+              <div className="flex gap-1">
+                <div className="w-2 h-2 rounded-full bg-violet-500/80 animate-pulse" />
+                <div className="w-2 h-2 rounded-full bg-violet-500/40" />
+                <div className="w-2 h-2 rounded-full bg-violet-500/20" />
+              </div>
+              <span className="text-[10px] font-mono text-white/20 uppercase tracking-[0.15em] ml-1">
+                Résultat
+              </span>
+            </div>
+            <AnalysisResultPanel
+              result={result}
+              analysisId={analysisId}
+              script={currentScript}
+              platform={currentPlatform}
+              feedbackStatus={feedbackStatus}
+              onFeedback={(status) => setFeedbackStatus(status)}
+            />
+          </div>
+        )}
+      </div>
     </div>
-  );
+  )
 }

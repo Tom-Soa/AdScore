@@ -1,27 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Martian+Mono:wght@300;400;500;600&family=Figtree:wght@300;400;500;600&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #09090b;
+  --foreground: #fafafa;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
 body {
-  color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--foreground);
+  font-family: 'Figtree', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.font-mono {
+  font-family: 'Martian Mono', monospace;
+}
+
+h1, h2, h3, .font-display {
+  font-family: 'Syne', sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.bg-mesh {
+  background-color: #09090b;
+  background-image:
+    radial-gradient(ellipse at 20% 20%, rgba(124, 58, 237, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(99, 102, 241, 0.06) 0%, transparent 50%);
+}
+
+/* Force dark background on all form elements */
+input,
+textarea,
+select {
+  background-color: #0f0f12 !important;
+  color-scheme: dark;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.18);
+}
+
+/* Scan line overlay on textarea */
+.textarea-dark {
+  background-color: #0c0c0f;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
 }
