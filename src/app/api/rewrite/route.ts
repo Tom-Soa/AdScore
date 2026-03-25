@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       .join('\n')
 
     const message = await client.messages.create({
-      model: 'claude-sonnet-4-5-20251001',
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: 2048,
       system: `Tu es un expert en copywriting publicitaire conforme aux règles de ${platformLabel}.
 Réécris les scripts en conservant le message commercial tout en éliminant les problèmes de conformité.
